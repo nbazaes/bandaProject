@@ -1,0 +1,80 @@
+{% extends 'index.html' %}
+{% block contenido %}
+<h3 class="alert alert-secondary text-center">Lista de álbumes</h3>
+<div class="text-end mb-3">
+    {% if perms.albumsApp.add_album %}
+    <a href="{% url 'crearalbum' %}" class="btn btn-outline-primary">
+        Crear álbum
+    </a>
+    {% endif %}
+</div>
+<form action="" method="post">
+    {% csrf_token %}
+    <div class="input-group mt-3 mb-3">
+        <span class="input-group-text">Banda</span>
+        {{ form.bandas }}
+        <span class="input-group-text">Nombre</span>
+        {{ form.texto }}
+        <input type="submit" value="Buscar" class="btn btn-primary" />
+    </div>
+</form>
+
+{% if lista %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Banda</th>
+                <th>Título</th>
+                <th>Fecha Lanzamiento</th>
+                <th>Portada</th>
+                <th>Canción del álbum</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in lista %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.banda }}</td>
+                    <td>{{ item.titulo }}</td>
+                    <td>{{ item.fecha_lanzamiento }}</td>
+                    <td>
+                        <img src="/media/{{ item.portada }}" class="img" width="150px">    
+                    </td>
+                    <td>
+                        {% if item.video_url %}
+                        <iframe width="373" height="210" src="{{item.video_url}}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                        {% else %}
+                        {% endif %}
+                    </td>
+                    <td nowrap>
+                        {% if perms.albumsApp.change_album %}<a href="{% url 'editaralbum' item.id %}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>{% endif %}
+                        {% if perms.albumsApp.delete_album %}<a href="#" onclick="eliminar('{{ item.id }}')" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    const eliminar =(codigo) =>{
+        Swal.fire({
+            title:'¿Está seguro de eliminar el álbum?',
+            text:'No podrás revertir los cambios',
+            icon:'warning',
+            showCancelButton:true,
+            confirmButtonColor:'red',
+            confirmButtonText:'Eliminar'
+        }).then(result =>{
+            if(result.isConfirmed){
+                window.location.href = '/albums/eliminaralbum/'+codigo
+            }
+        })
+    }
+</script>
+{% else %}
+<p class="alert alert-warning">No hay álbumes registrados</p>
+{% endif %}
+{% endblock %}

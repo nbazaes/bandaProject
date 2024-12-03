@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+</head>
+<body>
+    <!-- Login 1 - Bootstrap Brain Component -->
+    <section class="vh-100 gradient-custom">
+      <h1 class="p-5 text-center text-white">Bienvenido al registro de bandas</h1>
+      <div class="container py-5 h-80">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="card bg-dark text-white" style="border-radius: 1rem;">
+              <div class="card-body p-5 text-center">
+    
+                <div class="mb-md-5 mt-md-4 pb-5">
+                  <form method="POST" action="{% url 'register' %}">
+                    {% csrf_token %}
+                    <h2 class="fw-bold mb-2 text-uppercase">Regístrate</h2>
+                    {{ formulario }}
+      
+                    <button class="btn btn-outline-light btn-lg px-5" type="submit">Registrarse</button>
+                  </form>
+                </div>
+    
+                <div>
+                  <p class="mb-0">¿Tienes una cuenta? <a href="{% url 'login' %}" class="text-white-50 fw-bold">Inicia sesión</a>
+                  </p>
+                </div>
+    
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <style>
+      .gradient-custom {
+        /* fallback for old browsers */
+        background: #6a11cb;
+        
+        /* Chrome 10-25, Safari 5.1-6 */
+        background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+        
+        /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        background: linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1))
+        }
+    </style>
+    <script>
+      document.getElementById('id_username').classList.add('form-control')
+      document.getElementById('id_password').classList.add('form-control')
+</script>
+{% if messages %} 
+{% for msj in messages %}
+    <script>
+        Swal.fire('{{ msj }}','','success')
+    </script>
+{% endfor %}    
+{% endif %}
+  </body>
+</html>
+
+{% comment %} {% extends 'index.html' %}
+{% block contenido %}
+<h3 class="alert alert-secondary mb-3 text-center">{{ titulo }}</h3>
+    
+{% if messages %} 
+{% for msj in messages %}
+    <script>
+        Swal.fire('{{ msj }}','','success')
+    </script>
+{% endfor %}    
+{% endif %}
+  <form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    {{ formulario }}
+    <button type="submit" class="btn btn-primary">Registrar</button>
+  </form>
+{% endblock %}
+ {% endcomment %}

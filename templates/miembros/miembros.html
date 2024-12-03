@@ -1,0 +1,66 @@
+{% extends 'index.html' %}
+{% block contenido %}
+<h3 class="alert alert-secondary text-center">Lista de miembros de bandas</h3>
+<div class="text-end mb-3">
+    {% if perms.miembrosApp.add_miembro %}
+    <a href="{% url 'crearmiembro' %}" class="btn btn-outline-primary">
+        Crear miembro
+    </a>
+    {% endif %}
+    
+</div>
+
+{% if lista %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>ID</th>
+                <th>Banda</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Instrumento</th>
+                <th>Foto</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in lista %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.banda }}</td>
+                    <td>{{ item.nombre }}</td>
+                    <td>{{ item.apellido }}</td>
+                    <td>{{ item.instrumento }}</td>
+                    <td>
+                        <img src="/media/{{ item.foto }}" class="img" width="150px">    
+                    </td>
+                    <td nowrap>
+                        {% if perms.miembrosApp.change_miembro %}<a href="{% url 'editarmiembro' item.id %}" class="btn btn-warning"><i class="bi bi-pencil-square"></i></a>{% endif %}
+                        {% if perms.miembrosApp.delete_miembro %}<a href="#" onclick="eliminar('{{ item.id }}')" class="btn btn-danger"><i class="bi bi-trash-fill"></i></a>{% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    const eliminar =(codigo) =>{
+        Swal.fire({
+            title:'¿Está seguro de eliminar este miembro?',
+            text:'No podrás revertir los cambios',
+            icon:'warning',
+            showCancelButton:true,
+            confirmButtonColor:'red',
+            confirmButtonText:'Eliminar'
+        }).then(result =>{
+            if(result.isConfirmed){
+                window.location.href = '/miembros/eliminarmiembro/'+codigo
+            }
+        })
+    }
+</script>
+{% else %}
+<p class="alert alert-warning">No hay miembros registrados</p>
+{% endif %}
+{% endblock %}

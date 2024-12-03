@@ -1,0 +1,56 @@
+{% extends 'index.html' %}
+{% block contenido %}
+<h3 class="alert alert-secondary text-center">Lista de géneros</h3>
+
+{% if perms.bandasApp.add_genero  %}
+<div class="text-end mb-3">
+    <a href="{% url 'creargenero' %}" class="btn btn-outline-primary">Crear género</a>
+</div>
+{% endif %}
+  
+{% if lista %}
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary">
+            <tr>
+                <th>Género</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in lista %}
+                <tr>
+                    <td class="col-10">{{ item.nombre }}</td>
+                    <td nowrap>
+                        {% if perms.bandasApp.change_genero  %}
+                        <a href="{% url 'editargenero' item.id %}" class="btn btn-warning">Editar</a>
+                        {% endif %}
+                        {% if perms.bandasApp.delete_genero  %}
+                        <a href="#" onclick="eliminar('{{ item.id }}')" class="btn btn-danger">Borrar</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    const eliminar =(id) =>{
+        Swal.fire({
+            title:'¿Está seguro de eliminar este género?',
+            text:'No podrás revertir los cambios',
+            icon:'warning',
+            showCancelButton:true,
+            confirmButtonColor:'red',
+            confirmButtonText:'Eliminar'
+        }).then(result =>{
+            if(result.isConfirmed){
+                window.location.href = '/bandas/eliminargenero/'+id
+            }
+        })
+    }
+</script>
+{% else %}
+<p class="alert alert-warning">No hay géneros registrados</p>
+{% endif %}
+{% endblock %}
